@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - P2P</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+</head>
+
+<body class="bg-gray-100 flex">
+
+    <aside class="w-64 bg-slate-800 text-white min-h-screen p-5 flex flex-col gap-4 fixed">
+        <h2 class="text-xl font-bold mb-6 text-yellow-400 tracking-wide">P2P Admin System</h2>
+        <a href="dashboard.html" class="bg-slate-700 p-2.5 rounded font-medium block">Dashboard</a>
+        <a href="users.html" class="hover:bg-slate-700 p-2.5 rounded font-medium block">Kelola User</a>
+        <a href="loans.html" class="hover:bg-slate-700 p-2.5 rounded font-medium block">Kelola Pinjaman</a>
+        <button onclick="localStorage.clear(); window.location.href='login.html';"
+            class="mt-auto bg-red-600 p-2 rounded text-center font-semibold hover:bg-red-700">Logout</button>
+    </aside>
+
+    <main class="flex-1 ml-64 p-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Selamat Datang di Portal Admin</h1>
+            <p class="text-gray-600 mt-1">Gunakan panel kontrol kiri untuk memantau status aplikasi lending, mengelola
+                data pengguna, serta melakukan approval pinjaman dana.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
+                <h3 class="text-gray-500 font-semibold text-sm uppercase">Total Aktivitas User</h3>
+                <p class="text-2xl font-bold text-gray-800 mt-2">Terintegrasi Live</p>
+                <a href="users.html" class="text-sm text-yellow-600 hover:underline mt-4 inline-block">Buka Manajemen
+                    User &rarr;</a>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+                <h3 class="text-gray-500 font-semibold text-sm uppercase">Persetujuan Kredit (Loans)</h3>
+                <p class="text-2xl font-bold text-gray-800 mt-2">Perlu Verifikasi</p>
+                <a href="loans.html" class="text-sm text-blue-600 hover:underline mt-4 inline-block">Buka Manajemen
+                    Pinjaman &rarr;</a>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

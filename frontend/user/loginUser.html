@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Peminjam</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+</head>
+
+<body class="bg-gray-50">
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        // PERBAIKAN: Jika token kosong, tendang balik ke loginUser.html
+        if (!token || user?.role !== 'USER') {
+            window.location.href = 'loginUser.html';
+        }
+    </script>
+
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-bold">P2P Lending - Peminjam</h1>
+        <div class="space-x-4">
+            <a href="dashboardUser.html" class="underline">Dashboard</a>
+            <a href="pengajuanUser.html" class="hover:underline">Ajukan Pinjaman</a>
+            <a href="riwayatUser.html" class="hover:underline">Riwayat</a>
+            <button onclick="logout()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
+        <h2 class="text-2xl font-bold mb-4">Selamat Datang, <span id="userName" class="text-blue-600"></span>!</h2>
+        <p class="text-gray-600 mb-6">Melalui dasbor ini, Anda dapat mengajukan permohonan modal pinjaman usaha baru dan memantau status pendanaan Anda secara real-time.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 class="font-semibold text-lg text-blue-800 mb-2">Butuh Modal Usaha?</h3>
+                <p class="text-sm text-gray-600 mb-4">Ajukan pinjaman dengan bunga rendah dan pengisian formulir yang cepat.</p>
+                <a href="pengajuanUser.html"
+                    class="bg-blue-600 text-white px-4 py-2 rounded inline-block text-sm hover:bg-blue-700">Mulai Pengajuan</a>
+            </div>
+            <div class="p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                <h3 class="font-semibold text-lg text-gray-800 mb-2">Pantau Status Permohonan</h3>
+                <p class="text-sm text-gray-600 mb-4">Lihat apakah pengajuan Anda sudah di-approve oleh Admin atau sudah didanai oleh Investor.</p>
+                <a href="riwayatUser.html"
+                    class="bg-gray-600 text-white px-4 py-2 rounded inline-block text-sm hover:bg-gray-700">Lihat Riwayat</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('loginForm');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+
+        const response = await fetch(
+            'http://localhost:5000/api/auth/login',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.message);
+            return;
+        }
+
+        if (data.user.role !== 'USER') {
+            alert('Anda bukan peminjam');
+            return;
+        }
+
+        localStorage.setItem(
+            'token',
+            data.token
+        );
+
+        localStorage.setItem(
+            'user',
+            JSON.stringify(data.user)
+        );
+
+        window.location.href =
+            'dashboardUser.html';
+
+    } catch (err) {
+
+        console.log(err);
+
+        alert('Server error');
+    }
+});
+    </script>
+</body>
+
+</html>

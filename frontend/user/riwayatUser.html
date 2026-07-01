@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pinjaman</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+</head>
+
+<body class="bg-gray-50">
+    <script>
+        if (!localStorage.getItem('token')) window.location.href = 'login.html';
+    </script>
+
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-bold">P2P Lending - Peminjam</h1>
+        <div class="space-x-4">
+            <a href="dashboard.html" class="hover:underline">Dashboard</a>
+            <a href="pengajuan.html" class="hover:underline">Ajukan Pinjaman</a>
+            <a href="riwayat.html" class="underline">Riwayat</a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Daftar Riwayat Pinjaman Anda</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 text-left border-b">
+                        <th class="p-3">ID</th>
+                        <th class="p-3">Jumlah (IDR)</th>
+                        <th class="p-3">Tujuan/Keperluan</th>
+                        <th class="p-3">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="loanTableBody">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // FETCH DATA PINJAMAN DARI REST API BACKEND
+        async function fetchHistory() {
+            try {
+                const response = await fetch('http://localhost:3000/api/loans/history', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                const tableBody = document.getElementById('loanTableBody');
+                tableBody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada riwayat pengajuan pinjaman.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(loan => {
+                    let statusClass = 'bg-yellow-100 text-yellow-800';
+                    if (loan.status === 'APPROVED') statusClass = 'bg-blue-100 text-blue-800';
+                    if (loan.status === 'FUNDED') statusClass = 'bg-green-100 text-green-800';
+                    if (loan.status === 'REJECTED') statusClass = 'bg-red-100 text-red-800';
+
+                    tableBody.innerHTML += `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-3 font-semibold">#${loan.id}</td>
+                            <td class="p-3">Rp ${Number(loan.amount).toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-gray-700">${loan.purpose}</td>
+                            <td class="p-3">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${statusClass}">${loan.status}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                alert('Gagal mengambil data dari server.');
+            }
+        }
+
+        fetchHistory();
+    </script>
+</body>
+
+</html>
